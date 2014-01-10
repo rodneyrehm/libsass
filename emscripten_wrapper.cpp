@@ -1,21 +1,7 @@
 #include <cstdlib>
 #include <cstring>
 #include "sass_interface.h"
-
-#ifdef __cplusplus
-extern "C" {
-using namespace std;
-#endif
-
-char *sass_compile_unrolled(
-  char *source_string,
-  int output_style,
-  char **error_message
-);
-
-#ifdef __cplusplus
-}
-#endif
+#include "empscripten_wrapper.hpp"
 
 char *sass_compile_unrolled(
   char *source_string,
