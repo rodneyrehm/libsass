@@ -1,126 +1,57 @@
-Libsass
-=======
+# Libsass - Emscripten Fork
 
-by Aaron Leung ([@akhleung]) and Hampton Catlin ([@hcatlin])
+This is a fork of the official [libsass](https://github.com/hcatlin/libsass/) repository. Functionality of libsass has not been altered. This fork only contains modifications pertinent to compiling `libsass.js` using [Emscripten](https://github.com/kripken/emscripten/). 
 
-[![Build Status](https://travis-ci.org/hcatlin/libsass.png?branch=master)](https://travis-ci.org/hcatlin/libsass)
+> A fair warning: minified it's 2MB, gzipped it's 550KB.
 
-http://github.com/hcatlin/libsass
+---
 
-Libsass is just a library, but if you want to RUN libsass,
-then go to http://github.com/hcatlin/sassc or
-http://github.com/hcatlin/sassruby or
-[find your local implementer](https://github.com/hcatlin/libsass/wiki/Implementations).
+Using `libsass.js` is rather simple:
 
-About
------
-
-Libsass is a C/C++ port of the Sass CSS precompiler. The original version was written in Ruby, but this version is meant for efficiency and portability.
-
-This library strives to be light, simple, and easy to build and integrate with a variety of platforms and languages.
-
-Developing
-----------
-
-As you may have noticed, the libsass repo itself has
-no executables and no tests. Oh noes! How can you develop???
-
-Well, luckily, SassC is the official binary wrapper for
-libsass and is *always* kept in sync. SassC uses a git submodule
-to include libsass. When developing libsass, its best to actually
-check out SassC and develop in that directory with the SassC spec
-and tests there.
-
-We even run Travis tests for SassC!
-
-Tests
--------
-
-Since libsass is a pure library, tests are run through the [SassSpec](http://github.com/hcatlin/sass-spec) project using the [SassC](http://github.com/hcatlin/sassc) driver.
-
-To run tests against libsass while developing, please ensure you have the latest version of the above projects cloned, and then define the following environment variables:
-
-```bash
-export SASS_SPEC_PATH=~/path/sass-spec
-export SASS_SASSC_PATH=~/path/sassc
-export SASS_LIBSASS_PATH=~/path/libsass
+```javascript
+var scss = "$foo: 123px; .selector { width: $foo; }";
+var css = Sass.compile(scss, Sass.style.);
+console.log(css);
 ```
 
-Obviously, update them to your local environment. Then, its just a matter of running...
+outputs
 
-```bash
-make test
+```css
+.selector {
+  width: 123px; }
 ```
 
-Usage
------
+---
 
-While libsass is primarily implemented in C++, it provides a simple
-C interface that is defined in [sass_interface.h]. Its usage is pretty
-straight forward.
+## Compiling `libsass.js` Yourself
 
-First, you create a sass context struct. We use these objects to define
-different execution parameters for the library. There are three
-different context types.
+### Environment
 
-```c
-sass_context();        // string-in-string-out compilation
-sass_file_context();   // file-based compilation
-sass_folder_context(); // full-folder multi-file
-```
+1. Make sure you've got `python2`! If `which python2` says "python2 not found" run `sudo ln -s /usr/bin/python /usr/bin/python2` which will simply make the current python installation available under the name python2. Maybe check that it really is Python version 2 using `python --version`. If it's not, download and install Python 2.
+2. Download [Emscripten Portable SDK](https://github.com/kripken/emscripten/wiki/Emscripten-SDK#downloads).
+3. Install the Portable SDK and run `source emsdk_add_path` (or add that to your `PATH` if you plan on using emscripten beyond a test-run).
 
-Each of the contexts have slightly different behavior and are
-implemented seperately. This does add extra work to implementing
-a wrapper library, but we felt that a mixed-use context object
-provides for too much implicit logic. What if you set "input_string"
-AND "input_file"... what do we do? This would introduce bugs into
-wrapper libraries that would be difficult to debug.
+### Compiling `libsass`
 
-We anticipate that most adapters in most languages will define
-their own logic for how to separate these use cases based on the
-language. For instance, the original Ruby interface has a combined
-interface, but is backed by three different processes.
+This repository contains a modified `Makefile` and adds `emscripten_wrapper.cpp`. Make sure they are present.
 
-To generate a context, use one of the following methods.
+1. run `emmake make` to build / link / whatever.
+2. run `emcc -O2 libsass.a -o js/libsass.js -s EXPORTED_FUNCTIONS="['_sass_compile_unrolled']" -s DISABLE_EXCEPTION_CATCHING=0 && du -sh libsass.js` to compile the build to JavaScript. The file will be available at `src/libsass.js`.
 
-```c
-sass_new_context();
-sass_new_file_context();
-sass_new_folder_context();
-```
+`EXPORTED_FUNCTIONS` lists the names of the C++ functions we want to be accessible in JavaScript. The `DISABLE_EXCEPTION_CATCHING` is necessary because libsass uses exceptions internally. If you omit this you get a much smaller file (about 1.9MB instead of 2.4MB) - but you will *not* get any feedback on parser errors. `Sass.compile()` in JavaScript will simply return `{line: null, message: "Unknown Error" }`
 
-Again, please see the [sass_interface.h] for more information.
+### Minifying `libsass.js`
 
-And, to get even more information, then please see the implementations
-in SassC and SassC-Ruby.
+1. download [Google Closure Compiler](https://developers.google.com/closure/compiler/) ([compiler-latest.zip](http://dl.google.com/closure-compiler/compiler-latest.zip))
+2. run `java -jar compiler-latest/compiler.jar --compilation_level SIMPLE_OPTIMIZATIONS --language_in ECMASCRIPT5 --warning_level QUIET --js js/libsass.js --js_output_file js/libsass.min.js`. Note that `ADVANCED_OPTIMIZATION` will break the JavaScript.
 
-About Sass
-----------
 
-Sass is a CSS pre-processor language to add on exciting, new,
-awesome features to CSS. Sass was the first language of its kind
-and by far the most mature and up to date codebase.
+---
 
-Sass was originally created by the co-creator of this library,
-Hampton Catlin ([@hcatlin]). The extension and continuing evolution
-of the language has all been the result of years of work by Nathan
-Weizenbaum ([@nex3]) and Chris Eppstein ([@chriseppstein]).
+## What You Didn't Want To Know
 
-For more information about Sass itself, please visit http://sass-lang.com
+I have no idea what I'm doing. My C++ is as good as your Klingon. My understanding of Emscripten is on par with your understanding of rocket science. I still got it to work, though. [Christian Kruse](https://github.com/ckruse) and [Andres Freund](https://github.com/anarazel) will happily tell you all about how [Tobias Tom](https://github.com/tobiastom) annihilated tons of popcorn watching the three of us suffer because of my utter incompetence. I wouldn't have looked into this if it wasn't for [Sebastian Golasch](http://github.com/asciidisco). And none of us would've gotten anywhere with Emscripten if it wasn't for [Alon Zakai](http://github.com/kripken).
 
-Contribution Agreement
-----------------------
+## License
 
-Any contribution to the project are seen as copyright assigned to Hampton Catlin, a
-human on the planet earth. Your contribution warrants that you have the right to
-assign copyright on your work. The intention here is to ensure that the project
-remains totally free (liberal, like).
-
-Our MIT license is designed to be as simple, and liberal as possible.
-
-[@hcatlin]: http://github.com/hcatlin
-[@akhleung]: http://github.com/akhleung
-[@chriseppstein]: http://github.com/chriseppstein
-[@nex3]: http://github.com/nex3
-
-[sass_interface.h]: sass_interface.h
+Do what the f* you like. If that doesn't work for you, the MIT License should!
