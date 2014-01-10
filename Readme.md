@@ -4,6 +4,8 @@ This is a fork of the official [libsass](https://github.com/hcatlin/libsass/) re
 
 > A fair warning: minified it's 2MB, gzipped it's 550KB.
 
+See the [live example](http://rodneyrehm.github.io/libsass/) 
+
 ---
 
 Using `libsass.js` is rather simple:
@@ -20,6 +22,13 @@ outputs
 .selector {
   width: 123px; }
 ```
+
+## Known Problems
+
+* compile styles `nested`, `expanded` and `compact` seem to behave exactly the same
+* compile style `compressed` prefixes every selector with `&`
+
+(I haven't looked into why this is happending)
 
 ---
 
