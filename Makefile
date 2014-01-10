@@ -1,5 +1,5 @@
-CXX      = g++
-CXXFLAGS = -Wall -O2 -fPIC -g
+CXX      = emcc
+CXXFLAGS = -Wall -O2 -fPIC
 LDFLAGS  = -fPIC
 
 PREFIX    = /usr/local
@@ -13,7 +13,7 @@ SOURCES = ast.cpp base64vlq.cpp bind.cpp constants.cpp context.cpp contextualize
 	copy_c_str.cpp error_handling.cpp eval.cpp expand.cpp extend.cpp file.cpp \
 	functions.cpp inspect.cpp output_compressed.cpp output_nested.cpp \
 	parser.cpp prelexer.cpp sass.cpp sass_interface.cpp source_map.cpp to_c.cpp to_string.cpp \
-	units.cpp
+	units.cpp emscripten_wrapper.cpp
 
 OBJECTS = $(SOURCES:.cpp=.o)
 
@@ -23,7 +23,7 @@ static: libsass.a
 shared: libsass.so
 
 libsass.a: $(OBJECTS)
-	ar rvs $@ $(OBJECTS)
+	$(AR) rvs $@ $(OBJECTS)
 
 libsass.so: $(OBJECTS)
 	$(CXX) -shared $(LDFLAGS) -o $@ $(OBJECTS)
@@ -43,13 +43,13 @@ install-shared: libsass.so
 $(SASSC_BIN): libsass.a
 	cd $(SASS_SASSC_PATH) && make
 
-test: $(SASSC_BIN) libsass.a
+test: $(SASSC_BIN) libsass.a 
 	ruby $(SASS_SPEC_PATH)/sass-spec.rb -c $(SASSC_BIN) -s $(LOG_FLAGS) $(SASS_SPEC_PATH)
 
-test_build: $(SASSC_BIN) libsass.a
+test_build: $(SASSC_BIN) libsass.a 
 	ruby $(SASS_SPEC_PATH)/sass-spec.rb -c $(SASSC_BIN) -s --ignore-todo $(LOG_FLAGS) $(SASS_SPEC_PATH)
 
-test_issues: $(SASSC_BIN) libsass.a
+test_issues: $(SASSC_BIN) libsass.a 
 	ruby $(SASS_SPEC_PATH)/sass-spec.rb -c $(SASSC_BIN) $(LOG_FLAGS) $(SASS_SPEC_PATH)/spec/issues
 
 clean:
