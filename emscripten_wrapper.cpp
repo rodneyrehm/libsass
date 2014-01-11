@@ -26,19 +26,18 @@ char *sass_compile_unrolled(
   } else {
     output_string = NULL;
   }
-  
+
   if (ctx->error_status) {
     *error_message = strdup(ctx->error_message);
   } else {
     *error_message = NULL;
   }
-  
   // I'm too dumb to understand how to access error_message pointer form JS
   // just return the error message and have JS figure things out
   if (ctx->error_status) {
     output_string = strdup(ctx->error_message);
   }
-  
+
   sass_free_context(ctx);
   return output_string;
 }
