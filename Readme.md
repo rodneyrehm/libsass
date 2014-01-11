@@ -31,13 +31,17 @@ Chances are you want to use one of the readily available Sass mixins (e.g. [drub
 
 ```javascript
 Sass.writeFile('one.scss', '.one { width: 123px; }');
-Sass.compile('@import "one";');
+Sass.writeFile('some-dir/two.scss', '.two { width: 123px; }');
+Sass.compile('@import "one"; @import "some-dir/two";');
 ```
 
 outputs
 
 ```css
 .one {
+  width: 123px; }
+
+.two {
   width: 123px; }
 ```
 
