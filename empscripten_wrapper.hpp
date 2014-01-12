@@ -7,7 +7,7 @@ extern "C" {
 using namespace std;
 #endif
 
-char *sass_compile_unrolled(
+char *sass_compile_emscripten(
   char *source_string,
   int output_style,
   int source_comments,

@@ -23,7 +23,7 @@ static: libsass.a
 shared: libsass.so
 
 js: static
-	emcc -O2 libsass.a -o js/libsass.js -s EXPORTED_FUNCTIONS="['_sass_compile_unrolled']" -s DISABLE_EXCEPTION_CATCHING=0
+	emcc -O2 libsass.a -o js/libsass.js -s EXPORTED_FUNCTIONS="['_sass_compile_emscripten']" -s DISABLE_EXCEPTION_CATCHING=0
 
 libsass.a: $(OBJECTS)
 	$(AR) rvs $@ $(OBJECTS)

@@ -45,6 +45,29 @@ outputs
   width: 123px; }
 ```
 
+### Link Sass Sheets in HTML
+
+Link your .sass/.scss stylesheets with the rel set to `stylesheet/sass`:
+
+```
+<link rel="stylesheet/sass" href="styles.scss" />
+```
+
+Then include `libsass.js`, `sass.js` & `linksass.js` and include them in the `<head>` element of your page, like so:
+
+```
+<script src="libsass.js"></script>
+<script src="sass.js"></script>
+<script src="linksass.js"></script>
+```
+
+Make sure you include your stylesheets before the script.
+
+If your sass sheet `@imports` files, make sure to link them before your sass sheet.
+
+<b>!IMPORTANT:</b>
+Never ever do this in production. If I will find this piece of code anywhere in production I will ask [Jenn Schiffer](https://twitter.com/jennschiffer) to blog about it.
+
 ## Known Problems
 
 * compile styles `nested`, `expanded` and `compact` seem to behave exactly the same
@@ -71,7 +94,7 @@ This repository contains a modified `Makefile` and adds `emscripten_wrapper.cpp`
 You can separate building and compiling to JS:
 
 1. run `emmake make` to build / link / whatever.
-2. run `emcc -O2 libsass.a -o js/libsass.js -s EXPORTED_FUNCTIONS="['_sass_compile_unrolled']" -s DISABLE_EXCEPTION_CATCHING=0` to compile the build to JavaScript. The file will be available at `src/libsass.js`.
+2. run `emcc -O2 libsass.a -o js/libsass.js -s EXPORTED_FUNCTIONS="['_sass_compile_emscripten']" -s DISABLE_EXCEPTION_CATCHING=0` to compile the build to JavaScript. The file will be available at `src/libsass.js`.
 
 `EXPORTED_FUNCTIONS` lists the names of the C++ functions we want to be accessible in JavaScript. The `DISABLE_EXCEPTION_CATCHING` is necessary because libsass uses exceptions internally. If you omit this you get a much smaller file (about 1.9MB instead of 2.4MB) - but you will *not* get any feedback on parser errors. `Sass.compile()` in JavaScript will simply return `{line: null, message: "Unknown Error" }`
 
