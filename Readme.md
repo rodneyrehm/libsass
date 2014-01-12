@@ -66,8 +66,12 @@ outputs
 
 This repository contains a modified `Makefile` and adds `emscripten_wrapper.cpp`. Make sure they are present.
 
+1. run `emmake make js` - The file will be available at `src/libsass.js`.
+
+You can separate building and compiling to JS:
+
 1. run `emmake make` to build / link / whatever.
-2. run `emcc -O2 libsass.a -o js/libsass.js -s EXPORTED_FUNCTIONS="['_sass_compile_unrolled']" -s DISABLE_EXCEPTION_CATCHING=0 && du -sh libsass.js` to compile the build to JavaScript. The file will be available at `src/libsass.js`.
+2. run `emcc -O2 libsass.a -o js/libsass.js -s EXPORTED_FUNCTIONS="['_sass_compile_unrolled']" -s DISABLE_EXCEPTION_CATCHING=0` to compile the build to JavaScript. The file will be available at `src/libsass.js`.
 
 `EXPORTED_FUNCTIONS` lists the names of the C++ functions we want to be accessible in JavaScript. The `DISABLE_EXCEPTION_CATCHING` is necessary because libsass uses exceptions internally. If you omit this you get a much smaller file (about 1.9MB instead of 2.4MB) - but you will *not* get any feedback on parser errors. `Sass.compile()` in JavaScript will simply return `{line: null, message: "Unknown Error" }`
 
