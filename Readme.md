@@ -8,7 +8,9 @@ See the [live example](http://rodneyrehm.github.io/libsass/)
 
 ---
 
-Using `libsass.js` is rather simple:
+## Using `libsass.js`
+
+I created two wrappers [`sass.js`](https://github.com/rodneyrehm/libsass/blob/emscripten/js/sass.js) and [`sass.worker.js`](https://github.com/rodneyrehm/libsass/blob/emscripten/js/sass.worker.js) so we don't have to know anything about Emscripten in order to compile stuff.
 
 ```javascript
 var scss = "$foo: 123px; .selector { width: $foo; }";
@@ -20,6 +22,26 @@ outputs
 
 ```css
 .selector {
+  width: 123px; }
+```
+
+### Working With Files
+
+Chances are you want to use one of the readily available Sass mixins (e.g. [drublic/sass-mixins](https://github.com/drublic/Sass-Mixins) or [Burbon](https://github.com/thoughtbot/bourbon)). While I haven't created a fully featured "loadBurbon()", registering files is possible:
+
+```javascript
+Sass.writeFile('one.scss', '.one { width: 123px; }');
+Sass.writeFile('some-dir/two.scss', '.two { width: 123px; }');
+Sass.compile('@import "one"; @import "some-dir/two";');
+```
+
+outputs
+
+```css
+.one {
+  width: 123px; }
+
+.two {
   width: 123px; }
 ```
 
