@@ -6,15 +6,18 @@
 char *sass_compile_unrolled(
   char *source_string,
   int output_style,
+  int source_comments,
+  char *include_paths,
   char **error_message
 ) {
   char *output_string;
   struct sass_options options;
   struct sass_context *ctx = sass_new_context();
 
+  options.source_comments = source_comments;
   options.output_style = output_style;
   options.image_path = NULL;
-  options.include_paths = NULL;
+  options.include_paths = include_paths;
 
   ctx->options = options;
   ctx->source_string = source_string;

@@ -10,6 +10,8 @@ using namespace std;
 char *sass_compile_unrolled(
   char *source_string,
   int output_style,
+  int source_comments,
+  char *include_paths,
   char **error_message
 );
 
