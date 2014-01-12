@@ -1,4 +1,4 @@
-CXX      = emcc
+CXX      ?= g++
 CXXFLAGS = -Wall -O2 -fPIC -g 
 LDFLAGS  = -fPIC
 
@@ -17,7 +17,7 @@ SOURCES = ast.cpp base64vlq.cpp bind.cpp constants.cpp context.cpp contextualize
 
 OBJECTS = $(SOURCES:.cpp=.o)
 
-all: static js
+all: static
 
 static: libsass.a
 shared: libsass.so
