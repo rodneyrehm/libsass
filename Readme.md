@@ -4,7 +4,7 @@ This is a fork of the official [libsass](https://github.com/hcatlin/libsass/) re
 
 > A fair warning: minified it's 2MB, gzipped it's 550KB.
 
-See the [sass.js live example](http://medialize.github.io/sass.js/). This repository only contains the emscripted libsass.js itself. It sports an API you probably don't want to use directly. For a more developer friendly API see [sass.js live example](https://github.com/medialize/sass.js/).
+See the [Sass.js live example](http://medialize.github.io/sass.js/). This repository only contains the emscripted libsass.js itself. It sports an API you probably don't want to use directly. For a more developer friendly API see [Sass.js](https://github.com/medialize/sass.js/).
 
 ```js
 /**
